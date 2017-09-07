@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isInternetConnectionAvailable() {
         try {
+            // Errors resolved by through the solution this link
+            // https://stackoverflow.com/questions/31654999/boolean-android-net-networkinfo-isconnectedorconnecting-is-not-working-in-andr
             ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             if (conMgr.getActiveNetworkInfo() != null && conMgr.getActiveNetworkInfo().isAvailable() && conMgr.getActiveNetworkInfo().isConnected())
