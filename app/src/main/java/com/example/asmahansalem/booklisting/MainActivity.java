@@ -2,7 +2,6 @@ package com.example.asmahansalem.booklisting;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -28,12 +27,13 @@ import java.util.List;
 
 /**
  * Here is a Java code source that helped me in implement this how to write this JSON Parsing and Async Task
- *
+ * <p>
  * https://github.com/laramartin/android_book_listing/blob/master/app/src/main/java/eu/laramartin/booklisting/MainActivity.java
  */
 public class MainActivity extends AppCompatActivity {
 
     EditText Search;
+    Context context = MainActivity.this;
     ImageView searchButton;
     ProgressBar mProgressBar;
     adapterBook adapter;
@@ -79,9 +79,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isInternetConnectionAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork.isConnectedOrConnecting();
+        try {
+            ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            if (conMgr.getActiveNetworkInfo() != null && conMgr.getActiveNetworkInfo().isAvailable() && conMgr.getActiveNetworkInfo().isConnected())
+                return true;
+            else
+                return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private void updateUi(List<book> books) {
@@ -102,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getUrlForHttpRequest() {
-        final String baseUrl = "https://www.googleapis.com/books/v1/volumes?q=search+";
+        final String baseUrl = "https://www.googleapis.com/books/v1/volumes?q=1";
         String formatUserInput = getUserInput().trim().replaceAll("\\s+", "+");
         String url = baseUrl + formatUserInput;
         return url;
@@ -199,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
 
-            List<book> books = utils.extractBooks(json);
+            List<book> books = Utils.extractBooks(json);
             return books;
         }
     }
